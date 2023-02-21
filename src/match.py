@@ -185,7 +185,7 @@ INITIAL = {
         "date":           "2023-01-01Z",  
         "time":           "00:00:00Z",
         "overtimeLength": 0,
-        "contenstant": [
+        "contestant": [
             {
                 "id":         "3oj3koph7uf63y1f9zr8r7ylo",
                 "name":         "Newell's Old Boys",

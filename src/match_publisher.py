@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 import time
 import copy
+import curses
 
 import match
 
@@ -36,10 +37,12 @@ async def hello(ws):
         "username": "anonymous"
     }
     await ws.send(json.dumps(hello_msg))
-    ans = await ws.recv()
-    ans = json.loads(ans)
+    ans = {}
+    while "type" not in ans or ans["type"] != "hello":
+        ans = await ws.recv()
+        ans = json.loads(ans)
     if "errors" in ans or not ans["success"]:
-        print("Error: Authorization error")
+        print(f'Error: Authorization error - ')
         exit(1)
     return ans["newUsername"]
 
@@ -53,10 +56,12 @@ async def create_match(ws, match_name):
         "value": match.INITIAL
     }
     await ws.send(json.dumps(create_msg))
-    ans = await ws.recv()
-    ans = json.loads(ans)
+    ans = {}
+    while "type" not in ans or ans["type"] != "create":
+        ans = await ws.recv()
+        ans = json.loads(ans)
     if "errors" in ans or not ans["created"]:
-        print("Error: Authorization error")
+        print(f'Error: {ans["errors"]}')
         exit(1)
     return ans["created"]
 
@@ -88,6 +93,7 @@ async def publish_match(ws, match_name, match_duration):
             ]
         }
         await ws.send(json.dumps(update_msg))
+        # we're not checking if the change was accepted because they're already tested and this fastens the processing
         if changes_list:
             w = seconds(c["time"], changes_list[0]["time"])
             time.sleep(w * sratio)
@@ -116,15 +122,42 @@ async def publish_match(ws, match_name, match_duration):
             w = seconds(c["time"], changes_list[0]["time"])
             time.sleep(w * sratio)
 
-async def start_client(match_name, port, match_duration):
+async def _start_client(match_name, port, match_duration):
     async with websockets.connect("ws://localhost:" + str(port)) as ws:
         print("Connection successfull")
+
+        # authenticate
         username = await hello(ws)
         print(f"Client username: {username}")
+
+        # create the match
         match = await create_match(ws, match_name)
+        print("Match '" + match["name"] + "' created.")
+
+        # wait for 'p' to start publishing
+        stdscr = curses.initscr()
+        curses.noecho()
+
+        stdscr.addstr("press 'p' to start publishing")
+        stdscr.refresh()
+        c = chr(stdscr.getch())
+        while c != "p":
+            stdscr.addstr("press 'p' to start publishing")
+            stdscr.refresh()
+            c = chr(stdscr.getch())
+            
+        curses.noecho()
+        curses.endwin()
+
+        # publish the match
         await publish_match(ws, match_name, match_duration)
-        # await websocket.send("Hello world!")
-        # await websocket.recv()
+        print("Match '" + match["name"] + "' published.")
+
+        # match is finished
+        print("Connection finished")
+
+def start_client(match_name, port, match_duration):
+    asyncio.run(_start_client(match_name, port, duration))
 
 ################
 ## MAIN
@@ -140,4 +173,4 @@ if __name__ == '__main__':
     match_name = sys.argv[2]
     duration   = int(sys.argv[3])
 
-    asyncio.run(start_client(match_name, port, duration))
+    start_client(match_name, port, duration)
