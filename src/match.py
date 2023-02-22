@@ -32,6 +32,18 @@ CHANGES = {
         {
             "time": "00:00",
             "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 0
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 0
+                },
+                "/matchData/overtime": {
+                    "type": "set",
+                    "value": False
+                },
                 "/matchData/scores": {
                     "type": "set",
                     "value": {
@@ -50,13 +62,11 @@ CHANGES = {
                     "value": "playing"
                 },
                 "/matchData/period": {
-                    "type": "set", # TODO: this should be an append to array
-                    "value": [
-                        {
-                            "id": 1,
-                            "start": "2022-01-12T14:00:44Z"
-                        }
-                    ]
+                    "type": "arrAppend",
+                    "value": {
+                        "id": 1,
+                        "start": "2022-01-12T14:00:44Z"
+                    }
                 }
             }
         },
@@ -64,44 +74,169 @@ CHANGES = {
         {
             "time": "05:10",
             "ops": {
-                "/matchData/scores": {
+                "/matchData/lengthMin": {
                     "type": "set",
-                    "value": {
-                        "ht": {
-                            "home": 0,
-                            "away": 0
-                        },
-                        "total": {
-                            "home": 0,
-                            "away": 0
-                        }
-                    }
+                    "value": 5
                 },
-                "/matchData/status": {
+                "/matchData/lengthSec": {
                     "type": "set",
-                    "value": "playing"
+                    "value": 10
                 },
-                "/matchData/period": {
+                "/matchData/lineUp/0/players/1/stat/yellowCards": {
                     "type": "set",
-                    "value": [
-                        {
-                            "id": 1,
-                            "start": "2022-01-12T14:00:44Z"
-                        }
-                    ]
-                }
+                    "value": 1
+                },
+            }
+        },
+        ### - [07:33] Goal - T1
+        {
+            "time": "07:33",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 7
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 33
+                },
+                "/matchData/scores/ht/home": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/scores/total/home": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/lineUp/0/players/0/stat/goals": {
+                    "type": "set",
+                    "value": 1
+                },
+            }
+        },
+        ### - [20:14] Goal - T1
+        {
+            "time": "20:14",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 20
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 14
+                },
+                "/matchData/scores/ht/home": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/scores/total/home": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/lineUp/0/players/0/stat/goals": {
+                    "type": "numAdd",
+                    "value": 1
+                },
+            }
+        },
+        ### - [25:10] Fault - T1 - red card
+        {
+            "time": "25:10",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 25
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 10
+                },
+                "/matchData/lineUp/0/players/1/stat/redCards": {
+                    "type": "set",
+                    "value": 1
+                },
+            }
+        },
+        ### - [29:02] Fault - T1 - red card
+        {
+            "time": "29:02",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 29
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 2
+                },
+                "/matchData/lineUp/0/players/6/stat/redCards": {
+                    "type": "set",
+                    "value": 1
+                },
+            }
+        },
+        ### - [43:44] Goal - T2
+        {
+            "time": "43:44",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 43
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 44
+                },
+                "/matchData/scores/ht/away": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/scores/total/away": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/lineUp/1/players/7/stat/goals": {
+                    "type": "set",
+                    "value": 1
+                },
             }
         },
         ### - [45:00] Extra time +01
         # TODO: add sth
         {
             "time": "45:00",
-            "ops": {}
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 45
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 0
+                },
+                "/matchData/overtime": {
+                    "type": "set",
+                    "value": True
+                },
+                "/matchData/lengthMinAdded": {
+                    "type": "set",
+                    "value": 1
+                },
+            }
         },
         ### - [45:00 + 01:00] First half ended
         {
             "time": "46:00",
             "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 46
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 0
+                },
                 "/matchData/status": {
                     "type": "set",
                     "value": "halftime"
@@ -122,21 +257,23 @@ CHANGES = {
         {
             "time": "45:00",
             "ops": {
-                "/matchData/scores": {
-                    "type": "set", # TODO: this should be an addition of a property and not a replacement
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 45
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 0
+                },
+                "/matchData/overtime": {
+                    "type": "set",
+                    "value": False
+                },
+                "/matchData/scores/ft": {
+                    "type": "set", # TODO: this should be an addition of a property (check that is working)
                     "value": {
-                        "ht": {
-                            "home": 0,
-                            "away": 0
-                        },
-                        "ft": {
-                            "home": 0,
-                            "away": 0
-                        },
-                        "total": {
-                            "home": 0,
-                            "away": 0
-                        }
+                        "home": 2,
+                        "away": 1
                     }
                 },
                 "/matchData/status": {
@@ -144,25 +281,261 @@ CHANGES = {
                     "value": "playing"
                 },
                 "/matchData/period": {
-                    "type": "set", # TODO: this should be an append to array
-                    "value": [
-                        {
-                            "id": 1,
-                            "start": "2023-01-12T14:00:00Z",
-                            "end": "2023-01-12T14:46:22Z"
-                        },
-                        {
-                            "id": 2,
-                            "start": "2023-01-12T15:02:00Z",
-                        }
-                    ]
-                }
+                    "type": "arrAppend",
+                    "value": {
+                        "id": 2,
+                        "start": "2023-01-12T15:02:00Z",
+                    }
+                },
+                "/matchData/lengthMinAdded": {
+                    "type": "unset"
+                },
+            }
+        },
+        ### - [46:25] Fault - T2 - yellow card
+        {
+            "time": "46:25",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 46
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 25
+                },
+                "/matchData/lineUp/1/players/8/stat/yellowCards": {
+                    "type": "set",
+                    "value": 1
+                },
+            }
+        },
+        ### - [51:54] Goal - T2
+        {
+            "time": "51:54",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 51
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 54
+                },
+                "/matchData/scores/ft/away": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/scores/total/away": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/lineUp/1/players/6/stat/goals": {
+                    "type": "set",
+                    "value": 1
+                },
+            }
+        },
+        ### - [59:41] Goal - T2
+        {
+            "time": "59:41",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 59
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 41
+                },
+                "/matchData/scores/ft/away": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/scores/total/away": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/lineUp/1/players/7/stat/goals": {
+                    "type": "numAdd",
+                    "value": 1
+                },
+            }
+        },
+        ### - [62:12] Fault - T1 - yellow card
+        {
+            "time": "62:12",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 62
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 12
+                },
+                "/matchData/lineUp/0/players/10/stat/yellowCards": {
+                    "type": "set",
+                    "value": 1
+                },
+            }
+        },
+        ### - [67:37] Goal - T2
+        {
+            "time": "67:37",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 67
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 37
+                },
+                "/matchData/scores/ft/away": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/scores/total/away": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/lineUp/1/players/7/stat/goals": {
+                    "type": "numAdd",
+                    "value": 1
+                },
+            }
+        },
+        ### - [77:55] Goal - T2
+        {
+            "time": "77:55",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 77
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 55
+                },
+                "/matchData/scores/ft/away": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/scores/total/away": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/lineUp/1/players/4/stat/goals": {
+                    "type": "set",
+                    "value": 1
+                },
+            }
+        },
+        ### - [82:04] Fault - T2 - red card
+        {
+            "time": "82:04",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 82
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 4
+                },
+                "/matchData/lineUp/1/players/5/stat/yellowCards": {
+                    "type": "set",
+                    "value": 1
+                },
+            }
+        },
+        ### - [88:59] Goal - T1
+        {
+            "time": "88:59",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 88
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 59
+                },
+                "/matchData/scores/ft/home": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/scores/total/home": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/lineUp/0/players/2/stat/goals": {
+                    "type": "set",
+                    "value": 1
+                },
+            }
+        },
+        ### - [90:00] Extra time +03
+        {
+            "time": "90:00",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 90
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 0
+                },
+                "/matchData/overtime": {
+                    "type": "set",
+                    "value": True
+                },
+                "/matchData/lengthMinAdded": {
+                    "type": "set",
+                    "value": 3
+                },
+            }
+        },
+        ### - [90:00 + 02:01] Goal - T1
+        {
+            "time": "92:01",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 92
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 1
+                },
+                "/matchData/scores/ft/home": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/scores/total/home": {
+                    "type": "numAdd",
+                    "value": 1,
+                },
+                "/matchData/lineUp/0/players/2/stat/goals": {
+                    "type": "set",
+                    "value": 1
+                },
             }
         },
         ### - [90:00 + 03:00] Second half ended
         {
             "time": "93:00",
             "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 93
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 0
+                },
                 "/matchData/status": {
                     "type": "set",
                     "value": "finished"
@@ -177,6 +550,21 @@ CHANGES = {
                 }
             }
         },
+        ### - [90:00 + 03:00] Result 4-5 - T2 Wins
+        # TODO: Add sth
+        {
+            "time": "93:00",
+            "ops": {
+                "/matchData/lengthMin": {
+                    "type": "set",
+                    "value": 93
+                },
+                "/matchData/lengthSec": {
+                    "type": "set",
+                    "value": 0
+                },
+            }
+        },
     ]
 }
 
@@ -184,7 +572,6 @@ INITIAL = {
     "matchInfo": {
         "date":           "2023-01-01Z",  
         "time":           "00:00:00Z",
-        "overtimeLength": 0,
         "contestant": [
             {
                 "id":         "3oj3koph7uf63y1f9zr8r7ylo",
@@ -222,6 +609,7 @@ INITIAL = {
         "status":    "scheduled",
         "lengthMin": 0,
         "lengthSec": 0,
+        "overtime": False,
         "period": [],
         "scores": {
             "ht": {
