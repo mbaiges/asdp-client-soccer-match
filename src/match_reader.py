@@ -86,7 +86,37 @@ async def subscribe_match(ws, match_name, last_change_at, last_change_id):
         exit(1)
     return ans["success"]
 
+events = []
+def add_events(m, last_changes):
+
+    match_data = m["matchData"]
+    for change in last_changes:
+        for path, op in change["ops"].items():
+            logo = None
+            player = None
+
+            if "yellowCards" in path:
+                logo        = "🟡"
+                description = "Yellow Card"
+            elif "redCards" in path:
+                logo        = "🔴"
+                description = "Red Card"
+            elif "goals" in path:
+                logo        = "⚽"
+                description = "Goal"
+            else:
+                continue
+
+            time = f'{match_data["lengthMin"]:02d}:{match_data["lengthSec"]:02d}'
+            events.append({
+                "time":        time,
+                "logo":        logo,
+                "description": description
+            })
+
 def draw_match_status(stdscr, m, last_changes):
+    global events
+
     # Clear screen
     stdscr.clear()
 
@@ -128,6 +158,10 @@ def draw_match_status(stdscr, m, last_changes):
     elif match_data["status"] == "finished":
         stdscr.addstr(f'Status: Finished\n')
     stdscr.addstr(f'Match time: {match_data["lengthMin"]:02d}:{match_data["lengthSec"]:02d}\n')
+    stdscr.addstr(f'----------------------------------\n')
+    add_events(m, last_changes)
+    for event in events:
+        stdscr.addstr(f'[{event["time"]}] {event["logo"]} {event["description"]}\n')
     stdscr.addstr(f'----------------------------------\n')
 
     # Refresh screen
