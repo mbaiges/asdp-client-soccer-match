@@ -3,6 +3,7 @@ import asyncio
 import websockets
 import json
 import curses
+import time
 
 from changes import apply_changes
 
@@ -96,14 +97,13 @@ def draw_match_status(stdscr, m, last_changes):
     stdscr.addstr(f'----------------------------------\n')
     stdscr.addstr(f'-------------- INFO --------------\n')
     stdscr.addstr(f'----------------------------------\n')
-    stdscr.addstr(f'DATE: {match_info["date"][-1]}\n')
-    stdscr.addstr(f'TIME: {match_info["time"][-1]}\n')
+    stdscr.addstr(f'Datetime: {match_info["date"][:-1]} {match_info["time"][:-1]}\n')
     stdscr.addstr(f'\n')
     stdscr.addstr(f'|{match_data["scores"]["total"]["home"]}| - [{match_info["contestant"][0]["code"]}] {match_info["contestant"][0]["officialName"]}\n')
     stdscr.addstr(f'VS\n')
     stdscr.addstr(f'|{match_data["scores"]["total"]["away"]}| - [{match_info["contestant"][1]["code"]}] {match_info["contestant"][1]["officialName"]}\n')
     stdscr.addstr(f'\n')
-    stdscr.addstr(f'STADIUM: {match_info["venue"]["longName"]}\n')
+    stdscr.addstr(f'Stadium: {match_info["venue"]["longName"]}\n')
     stdscr.addstr(f'----------------------------------\n')
     stdscr.addstr(f'\n')
 
@@ -114,13 +114,20 @@ def draw_match_status(stdscr, m, last_changes):
     if match_data["status"] == "playing":
         periods = match_data["period"]
         if len(periods) == 1:
-            stdscr.addstr(f'Status: Playing First Time\n')
+            if not match_data["overtime"]:
+                stdscr.addstr(f'Status: Playing - First Half\n')
+            else:
+                stdscr.addstr(f'Status: Playing - First Half - Overtime\n')
         else:
-            stdscr.addstr(f'Status: Playing Second Time\n')
+            if not match_data["overtime"]:
+                stdscr.addstr(f'Status: Playing - Second Half\n')
+            else:
+                stdscr.addstr(f'Status: Playing - Second Half - Overtime\n')
     elif match_data["status"] == "halftime":
         stdscr.addstr(f'Status: Half Time\n')
     elif match_data["status"] == "finished":
         stdscr.addstr(f'Status: Finished\n')
+    stdscr.addstr(f'Match time: {match_data["lengthMin"]:02d}:{match_data["lengthSec"]:02d}\n')
     stdscr.addstr(f'----------------------------------\n')
 
     # Refresh screen
@@ -161,11 +168,13 @@ async def observe_match(match_name, port, display):
                     draw_match_status(stdscr, match, changes)
                 pass
         if display:
+            time.sleep(3)
             curses.echo()
             curses.nocbreak()
             curses.endwin()
 
         print("Connection finished")
+        print(match["matchData"]["lineUp"][1]["players"][0])
 
 ################
 ## MAIN
