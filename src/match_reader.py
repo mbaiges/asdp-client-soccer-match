@@ -174,7 +174,6 @@ async def observe_match(match_name, port, display):
             curses.endwin()
 
         print("Connection finished")
-        print(match["matchData"]["lineUp"][1]["players"][0])
 
 ################
 ## MAIN
