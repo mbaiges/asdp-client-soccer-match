@@ -4,6 +4,7 @@ import websockets
 import json
 import curses
 import time
+import jsonpointer as jp
 
 from changes import apply_changes
 
@@ -96,10 +97,10 @@ def add_events(m, last_changes):
             player = None
 
             if "yellowCards" in path:
-                logo        = "🟡"
+                logo        = "\U0001F7E1"
                 description = "Yellow Card"
             elif "redCards" in path:
-                logo        = "🔴"
+                logo        = "\U0001F534"
                 description = "Red Card"
             elif "goals" in path:
                 logo        = "⚽"
@@ -107,11 +108,17 @@ def add_events(m, last_changes):
             else:
                 continue
 
+            ptr = jp.JsonPointer(path)
+            ptr_parts = ptr.parts
+            player_ptr = jp.JsonPointer.from_parts(ptr_parts[0:-2])
+            player = player_ptr.resolve(m, default=None)
+
             time = f'{match_data["lengthMin"]:02d}:{match_data["lengthSec"]:02d}'
             events.append({
                 "time":        time,
                 "logo":        logo,
-                "description": description
+                "description": description,
+                "player":      player
             })
 
 def draw_match_status(stdscr, m, last_changes):
@@ -161,7 +168,7 @@ def draw_match_status(stdscr, m, last_changes):
     stdscr.addstr(f'----------------------------------\n')
     add_events(m, last_changes)
     for event in events:
-        stdscr.addstr(f'[{event["time"]}] {event["logo"]} {event["description"]}\n')
+        stdscr.addstr(f'[{event["time"]}] ~ [{event["player"]["shirtNumber"]:02d}] {event["player"]["matchName"]:<20} ~ {event["description"]:<10}\n')
     stdscr.addstr(f'----------------------------------\n')
 
     # Refresh screen
