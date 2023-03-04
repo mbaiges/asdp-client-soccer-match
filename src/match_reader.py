@@ -204,7 +204,7 @@ async def observe_match(match_name, port, display):
             if "type" in msg and msg["type"] == "changes":
                 # do sth
                 changes = msg["changes"]
-                apply_changes(match, msg["changes"])
+                match = apply_changes(match, msg["changes"])
                 if display:
                     draw_match_status(stdscr, match, changes)
                 pass

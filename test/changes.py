@@ -20,7 +20,37 @@ def test_apply_changes_set():
         }
     ]
 
-    apply_changes(o, changes)
+    o = apply_changes(o, changes)
+
+    expected = "bar2"
+    got = o["foo"]
+
+    if expected != got:
+        err.append(f'expected "{expected}" but got "{got}"')
+
+    return err
+
+def test_apply_changes_set_2():
+    err = []
+
+    o = {
+        "foo": "bar"
+    }
+
+    changes = [
+        {
+            "ops": {
+                "/": {
+                    "type": "set",
+                    "value": {
+                        "foo": "bar2"
+                    }
+                }
+            }
+        }
+    ]
+
+    o = apply_changes(o, changes)
 
     expected = "bar2"
     got = o["foo"]
@@ -37,6 +67,12 @@ if __name__ == "__main__":
     if e:
         errors.append({
             "test": "test_apply_changes_set",
+            "errors": e
+        })
+    e = test_apply_changes_set_2()
+    if e:
+        errors.append({
+            "test": "test_apply_changes_set_2",
             "errors": e
         })
 
