@@ -200,6 +200,6 @@ if __name__ == '__main__':
     
     port       = int(sys.argv[1])
     match_name = sys.argv[2]
-    duration   = int(sys.argv[3])
+    duration   = float(sys.argv[3])
 
     start_client(match_name, port, duration)
