@@ -13,7 +13,7 @@ from changes import apply_changes
 ################
 
 def usage():
-    return f"Usage: {sys.argv[0]} " + "{port} {match_name} {display}"
+    return f"Usage: {sys.argv[0]} " + "{port} {match_name} {display|no_display|performance_test}"
 
 ################
 ## FUNCTIONS
@@ -174,7 +174,7 @@ def draw_match_status(stdscr, m, last_changes):
     # Refresh screen
     stdscr.refresh()
 
-async def observe_match(match_name, port, display):
+async def observe_match(match_name, port, mode):
     global match
 
     async with websockets.connect("ws://localhost:" + str(port)) as ws:
@@ -190,7 +190,7 @@ async def observe_match(match_name, port, display):
             exit(1)
         print(f"Subscribed: {sub}")
 
-        if display:
+        if mode == "display":
             stdscr = curses.initscr()
             curses.noecho()
             curses.cbreak()
@@ -205,10 +205,10 @@ async def observe_match(match_name, port, display):
                 # do sth
                 changes = msg["changes"]
                 match = apply_changes(match, msg["changes"])
-                if display:
+                if mode == "display":
                     draw_match_status(stdscr, match, changes)
                 pass
-        if display:
+        if mode == "display":
             time.sleep(3)
             curses.echo()
             curses.nocbreak()
@@ -228,6 +228,11 @@ if __name__ == '__main__':
     
     port       = int(sys.argv[1])
     match_name = sys.argv[2]
-    display    = sys.argv[3].lower() == "true"
+    mode       = sys.argv[3].lower()
 
-    asyncio.run(observe_match(match_name, port, display))
+    if mode not in ["display", "no_display", "performance_test"]:
+        print("Error: invalid mode")
+        print(usage())
+        exit(1)
+
+    asyncio.run(observe_match(match_name, port, mode))
