@@ -5,6 +5,8 @@ import json
 import curses
 import time
 import jsonpointer as jp
+import time
+import numpy as np
 
 from changes import apply_changes
 
@@ -21,6 +23,9 @@ def usage():
 
 #### GLOBAL ####
 match = None
+## Only used for performance test ##
+processing_times = []
+## Only used for performance test ## 
 ################
 
 async def hello(ws):
@@ -175,7 +180,7 @@ def draw_match_status(stdscr, m, last_changes):
     stdscr.refresh()
 
 async def observe_match(match_name, port, mode):
-    global match
+    global match, processing_times
 
     async with websockets.connect("ws://localhost:" + str(port)) as ws:
         print("Connection successfull")
@@ -204,7 +209,13 @@ async def observe_match(match_name, port, mode):
             if "type" in msg and msg["type"] == "changes":
                 # do sth
                 changes = msg["changes"]
+                if mode == "performance_test":
+                    started_processing_at = time.process_time()
                 match = apply_changes(match, msg["changes"])
+                if mode == "performance_test":
+                    finished_processing_at = time.process_time()
+                    ms = (finished_processing_at - started_processing_at) * 10**3
+                    processing_times.append(ms)
                 if mode == "display":
                     draw_match_status(stdscr, match, changes)
                 pass
@@ -213,6 +224,10 @@ async def observe_match(match_name, port, mode):
             curses.echo()
             curses.nocbreak()
             curses.endwin()
+
+        if mode == "performance_test":
+            processing_time_avg = np.array(processing_times).mean() if len(processing_times) > 0 else None
+            print(f'Average processing time: {processing_time_avg:.03f}')
 
         print("Connection finished")
 
