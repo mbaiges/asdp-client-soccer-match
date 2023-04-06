@@ -44,7 +44,7 @@ async def hello(ws):
     while "type" not in ans or ans["type"] != "hello":
         ans = await ws.recv()
         ans = json.loads(ans)
-    if "errors" in ans or not ans["success"]:
+    if ans["status"] != 200 or "errors" in ans:
         print(f'Error: Authorization error - ')
         exit(1)
     return ans["newUsername"]

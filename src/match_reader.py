@@ -9,6 +9,13 @@ import time
 import numpy as np
 
 from changes import apply_changes
+from analyze_performance_test import analyze_with_new
+
+################
+## CONSTANTS
+################
+
+PROCESSING_TIMES_FILENAME = "processing_times.json"
 
 ################
 ## UTILS
@@ -25,6 +32,7 @@ def usage():
 match = None
 ## Only used for performance test ##
 processing_times = []
+performance_output_filename = None
 ## Only used for performance test ## 
 ################
 
@@ -38,7 +46,10 @@ async def hello(ws):
     while "type" not in ans or ans["type"] != "hello":
         ans = await ws.recv()
         ans = json.loads(ans)
-    if "errors" in ans or not ans["success"]:
+    if ans["status"] != 200 or "errors" in ans:
+        print(f'Status: {ans["status"]}')
+        if "errors" in ans:
+            print(f'Errors: {ans["errors"]}')
         print(f'Error: Authorization error - {ans["errors"]}')
         exit(1)
     return ans["newUsername"]
@@ -87,10 +98,12 @@ async def subscribe_match(ws, match_name, last_change_at, last_change_id):
     while "type" not in ans or ans["type"] != "subscribe":
         ans = await ws.recv()
         ans = json.loads(ans)
-    if "errors" in ans or not "success" in ans:
-        print(f'Error: {ans["errors"]}')
+    if ans["status"] != 200 or "errors" in ans:
+        print(f'Status: {ans["status"]}')
+        if "errors" in ans:
+            print(f'Errors: {ans["errors"]}')
         exit(1)
-    return ans["success"]
+    return ans["status"] == 200
 
 events = []
 def add_events(m, last_changes):
@@ -226,8 +239,7 @@ async def observe_match(match_name, port, mode):
             curses.endwin()
 
         if mode == "performance_test":
-            processing_time_avg = np.array(processing_times).mean() if len(processing_times) > 0 else None
-            print(f'Average processing time: {processing_time_avg:.03f}')
+            analyze_with_new(performance_output_filename, processing_times)
 
         print("Connection finished")
 
@@ -249,5 +261,13 @@ if __name__ == '__main__':
         print("Error: invalid mode")
         print(usage())
         exit(1)
+
+    if mode == "performance_test":
+        if len(sys.argv) < 5:
+            print("Error: missing performance filename")
+            print(f"Usage: {sys.argv[0]} " + "{port} {match_name} performance_test {output_filename}")
+            exit(1)
+
+        performance_output_filename = sys.argv[4]
 
     asyncio.run(observe_match(match_name, port, mode))
