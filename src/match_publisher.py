@@ -63,7 +63,19 @@ async def create_match(ws, match_name):
     if "errors" in ans or not ans["created"]:
         print(f'Error: {ans["errors"]}')
         exit(1)
-    return ans["created"]
+    return ans["created"] if ans["status"] == 201 else None
+
+async def delete_match(ws, match_name):
+    create_msg = {
+        "type": "delete",
+        "name": match_name
+    }
+    await ws.send(json.dumps(create_msg))
+    ans = {}
+    while "type" not in ans or ans["type"] != "delete":
+        ans = await ws.recv()
+        ans = json.loads(ans)
+    return ans["status"] == 200
 
 async def publish_match(ws, match_name, match_duration):
     changes = match.CHANGES
@@ -152,6 +164,10 @@ async def _start_client(match_name, port, match_duration):
         # publish the match
         await publish_match(ws, match_name, match_duration)
         print("Match '" + match["name"] + "' published.")
+
+        # delete the match
+        await delete_match(ws, match_name)
+        print("Match '" + match["name"] + "' deleted.")
 
         # match is finished
         print("Connection finished")
