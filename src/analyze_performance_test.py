@@ -26,6 +26,8 @@ def plot_hist(data):
     # Probabilities histogram
     weights = np.ones_like(data) / data.shape[0]
     plt.hist(data, bins=num_bins, weights=weights)
+    plt.xlim(0.0,1.34)
+    plt.ylim(0.0,0.25)
 
     # # Compare to a normal curve
     # params = st.norm.fit(data)
