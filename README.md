@@ -1,2 +1,2 @@
-# asdp-client-soccer-match
-Aggregation Self-Described Client - Soccer Match
+# sdap-client-soccer-match
+Self-Described Aggregation Client - Soccer Match
